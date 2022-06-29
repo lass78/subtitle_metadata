@@ -4,4 +4,9 @@ app = Flask(__name__)
 
 @app.route("/")
 def main():
-    return render_template('index.htm')
+    return render_template('index.html')
+
+
+@app.route("file_dropped")
+def file_dropped(file):
+    return 

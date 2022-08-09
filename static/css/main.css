@@ -1,0 +1,17 @@
+#main {
+    background-color: blue;
+    display: flex;
+    height: 100vh;
+    
+}
+
+#text {
+    background-color: antiquewhite;
+    width: 50vw;
+}
+
+#info {
+    background-color: aqua;
+    width: 50vw;
+}
+

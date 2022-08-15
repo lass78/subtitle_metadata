@@ -153,20 +153,16 @@ class Playable():
                     if preferred_subtitle in subs['subtitleLanguagesFulfilled']:
                         
                         r = requests.get(subs['url'])
-                        filename = self.title.strip("?")+('.vtt')
+                        filename = "temp.vtt"
                         r.encoding = 'utf-8'
                         subtitles = r.text
                         with open(filename, 'w', encoding="utf-8", newline='') as f:
                             f.write(subtitles)
 
-                        buffer = StringIO(subtitles, newline='\n')
                         subt_file = webvtt.read(filename)
-                        print(subt_file)
                         result = ""
-                        for sub in webvtt.read(filename):
-                            
+                        for sub in webvtt.read(filename):                            
                             sent = str.replace(str.rstrip(str.strip(sub.text)),"\n"," ")                           
-                            print("SENT: ", sent)
                             result += sent + " "
                         # print (result)
                         return result

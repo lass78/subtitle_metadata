@@ -151,14 +151,22 @@ class Playable():
             for sources in asset['sources']:
                 for subs in sources['subtitles']:
                     if preferred_subtitle in subs['subtitleLanguagesFulfilled']:
+                        
                         r = requests.get(subs['url'])
+                        filename = self.title.strip("?")+('.vtt')
                         r.encoding = 'utf-8'
-
                         subtitles = r.text
-                        buffer = StringIO(subtitles)
+                        with open(filename, 'w', encoding="utf-8", newline='') as f:
+                            f.write(subtitles)
+
+                        buffer = StringIO(subtitles, newline='\n')
+                        subt_file = webvtt.read(filename)
+                        print(subt_file)
                         result = ""
-                        for sub in webvtt.read_buffer(buffer):
+                        for sub in webvtt.read(filename):
+                            
                             sent = str.replace(str.rstrip(str.strip(sub.text)),"\n"," ")                           
+                            print("SENT: ", sent)
                             result += sent + " "
                         # print (result)
                         return result
@@ -224,9 +232,19 @@ def subtitles_as_text(subs):
 
 
 def main():
-    p = Playable('00122244310')
+    ellemann = '00102235010'
+
+    abekopper = '00102200330'
+
+    tva = "00122241470"
+    dum_tva = '00122241600'
+
+    prod_n = abekopper
+
+
+    p = Playable(prod_n)
     print (p)
-    print (p.thumb)
+    print (p.subtitles)
 
 
 
@@ -235,29 +253,3 @@ if __name__ == '__main__':
 
 
 
-ellemann = '00102235010'
-
-abekopper = '00102200330'
-
-tva = "00122241470"
-
-prod_n = abekopper
-
-
-
-p = Playable(prod_n)
-
-# print (p.playable)
-# print (p.title)
-# print (p.description)
-# print (p.subtitles)
-# print (p.thumb)
-
-
-
-
-# print ("TITLE: ", get_title(prod_n))
-# print ("DESCRIPTION: ", get_description(prod_n))
-# print ("SUBTITLES: ", get_subtitles(prod_n))
-# print ("IMAGES: ", get_img(prod_n))
-# get_img(prod_n).show()

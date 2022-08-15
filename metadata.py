@@ -23,9 +23,9 @@ for word in extra_stopwords:
 
 # print (sw)
 
-subs = pysrt.open("tmp.srt")
+# subs = pysrt.open("tmp.srt")
 
-text = ""
+# text = ""
 
 
 
@@ -74,28 +74,69 @@ def kw_as_text(kw_list):
 
 
 
-for sub in subs:
-    text = text + sub.text + " "
-
-print (text)
-
-
-
-def main() -> int:
-    print ("SPACY - Organisations")
-    orgs = get_entities_spacy(text,5, "ORG")
-    print (orgs)
-    print (kw_as_text(orgs))
-
-    print ()
-
-    print ("keyBERT")
-    kw = (get_keywords_keyBERT(text,10))
-    print (kw_as_text(kw))
-    print (kw)
+def reduce_to_baseform(text):
+    import lemmy
+    lemmatizer = lemmy.load('da')
+    words = text.split()
+    lemmatized_text = ""
+    delemiter = ""
+    for word in words:
+        lem_word = lemmatizer.lemmatize("", word.strip(",. -"))
+        
+        # print(word, ": ", lem_word[0])
+        lemmatized_text = delemiter + lemmatized_text + lem_word[0] + " "
+        delemiter = " "
+    return lemmatized_text
 
 
-    print ()
+
+
+def main():
+    import ast
+    import time
+    from transformers import AutoModelForSeq2SeqLM
+    from vos_request import Playable
+    prodn = "00102200330" #abekopper
+    # prodn = "00122244310" #vingegaard
+    prodn = "00102200400" #explainer bier
+    prodn = "00102200410" #explainer atomkraft
+    subt = Playable(prodn).subtitles
+    print (subt)
+    with open('thesaurus_keywords.txt') as f:
+        thesaurus = ast.literal_eval(f.read())
+
+    print (reduce_to_baseform(subt))
+
+    modelnames = [
+        "all-mpnet-base-v2",
+        "multi-qa-mpnet-base-dot-v1",
+        "all-distilroberta-v1",
+        "all-MiniLM-L12-v2",
+        "multi-qa-distilbert-cos-v1",
+        "all-MiniLM-L6-v2",
+        "multi-qa-MiniLM-L6-cos-v1",
+        "paraphrase-multilingual-mpnet-base-v2",
+        "paraphrase-albert-small-v2",
+        "paraphrase-multilingual-MiniLM-L12-v2",
+        "paraphrase-MiniLM-L3-v2",
+        "distiluse-base-multilingual-cased-v1",
+        "distiluse-base-multilingual-cased-v2",
+    ]
+
+
+
+
+    for modelname in modelnames:
+        model = KeyBERT(model=modelname)
+        keywords = model.extract_keywords(subt, keyphrase_ngram_range=(1, 1), stop_words=sw, top_n=10)
+        keywords_lemmatized = model.extract_keywords(reduce_to_baseform(subt), keyphrase_ngram_range=(1, 1), stop_words=sw, top_n=10)
+        print ("MODEL: ", modelname)
+        print(keywords)
+        print(keywords_lemmatized)
+
+        print()
+        print ("------------------------------")
+
 
 
 

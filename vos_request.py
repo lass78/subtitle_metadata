@@ -1,4 +1,5 @@
 from mimetypes import init
+from urllib.error import HTTPError
 import requests
 
 import webvtt
@@ -11,7 +12,7 @@ import os
 
 # from apicall import get_subtitles
 
-
+headers = {'x-apikey':os.getenv('VOS_API_KEY')}
 
 
 class Playable():  
@@ -61,22 +62,41 @@ class Playable():
                 print ("RequestError: ", e)
                 return None
     
-    
-    def get_img (self, playable):
+    def get_img2(self, playable):
         image = None
         image_assets = playable['imageAssets']
         for asset in image_assets:
-            img = requests.get(asset['url']).content
+            print (asset)
 
+
+
+
+    def get_img (self, playable):
+        import re
+        image = None
+        image_assets = playable['imageAssets']
+        for asset in image_assets:
             
+            print (asset)
+            try:
+                img = requests.get(asset['url'], headers=headers).content
+            except HTTPError as e:
+                print("HTTPError: ", e)
+                return Image.open('dummy.png')
+            # print(img)         
+       
+            format = re.search("(?<=\/)\w+", asset['format']).group()
+            print (format)
+
             with BytesIO(img) as f:
                 with Image.open(f) as tmp:
                     image = tmp
-                    image.save('tmp.png')
+                    image.save('imgtst.'+format, format=format)
+                    # image = Image.open('tmp.jpg')
                     # image.show()    
                 print ("image found")
-            return image
-        
+                return image
+        return Image.open('dummy.png')
 
     def get_title(self, playable):
         print ("titel fundet")
@@ -206,7 +226,7 @@ def subtitles_as_text(subs):
 def main():
     p = Playable('00122244310')
     print (p)
-    print (p.categories)
+    print (p.thumb)
 
 
 
@@ -215,16 +235,17 @@ if __name__ == '__main__':
 
 
 
-# ellemann = '00102235010'
-# abekopper = '00102200330'
+ellemann = '00102235010'
 
-# tva = "00122241470"
+abekopper = '00102200330'
 
-# prod_n = tva
+tva = "00122241470"
+
+prod_n = abekopper
 
 
 
-# p = Playable(prod_n)
+p = Playable(prod_n)
 
 # print (p.playable)
 # print (p.title)

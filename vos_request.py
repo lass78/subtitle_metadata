@@ -99,8 +99,13 @@ class Playable():
         return Image.open('dummy.png')
 
     def get_title(self, playable):
-        print ("titel fundet")
-        return playable['title']
+        if 'displayTitle' in playable.keys():
+            return playable['displayTitle']
+        elif 'title' in playable.keys():
+            return playable['title']
+        else:
+            return "No Title"
+        
 
     def get_description(self, playable):
         
@@ -229,13 +234,14 @@ def subtitles_as_text(subs):
 
 def main():
     ellemann = '00102235010'
+    versus = '00922001260'
 
     abekopper = '00102200330'
 
     tva = "00122241470"
     dum_tva = '00122241600'
 
-    prod_n = abekopper
+    prod_n = versus
 
 
     p = Playable(prod_n)

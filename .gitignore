@@ -134,3 +134,6 @@ vosdata.json
 
 # secrets
 .streamlit
+
+#store filer
+data/

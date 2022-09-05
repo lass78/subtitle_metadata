@@ -58,8 +58,11 @@ def get_entities_spacy(text, n, label):
     return sorted_ents[:n]
 
 @st.cache(show_spinner=False)
-def get_keywords_keyBERT(text, n):
-    model = KeyBERT(model="paraphrase-multilingual-MiniLM-L12-v2")
+def get_keywords_keyBERT(text, n, max_len=1000):
+    print (len(text))
+    if len(text) > max_len:
+        text = text[0:max_len]
+    model = KeyBERT(model="distiluse-base-multilingual-cased-v2")
     keywords = model.extract_keywords(text, keyphrase_ngram_range=(1, 1), stop_words=sw, top_n=n )
     return keywords
 

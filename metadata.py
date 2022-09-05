@@ -62,7 +62,7 @@ def get_keywords_keyBERT(text, n, max_len=10000):
     print (len(text))
     if len(text) > max_len:
         text = text[0:max_len]
-    model = KeyBERT(model="distiluse-base-multilingual-cased-v2")
+    model = KeyBERT(model="paraphrase-multilingual-mpnet-base-v2")
     keywords = model.extract_keywords(text, keyphrase_ngram_range=(1, 1), stop_words=sw, top_n=n )
     return keywords
 

@@ -98,11 +98,11 @@ class Playable():
                 return image
         return Image.open('dummy.png')
 
-    def get_title(self, playable):
-        if 'displayTitle' in playable.keys():
-            return playable['displayTitle']
-        elif 'title' in playable.keys():
+    def get_title(self, playable):   
+        if 'title' in playable.keys():
             return playable['title']
+        elif 'displayTitle' in playable.keys():
+            return playable['displayTitle']
         else:
             return "No Title"
         

@@ -58,7 +58,7 @@ def get_entities_spacy(text, n, label):
     return sorted_ents[:n]
 
 @st.cache(show_spinner=False)
-def get_keywords_keyBERT(text, n, max_len=1000):
+def get_keywords_keyBERT(text, n, max_len=5000):
     print (len(text))
     if len(text) > max_len:
         text = text[0:max_len]
